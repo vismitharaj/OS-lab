@@ -5,7 +5,7 @@
 #define MAX_RESOURCES 10
 
 int main() {
-    int n, m; // n = number of processes, m = number of resources
+    int n, m; 
     int alloc[MAX_PROCESSES][MAX_RESOURCES];
     int max[MAX_PROCESSES][MAX_RESOURCES];
     int avail[MAX_RESOURCES];
@@ -17,7 +17,6 @@ int main() {
     printf("Enter number of processes and resources: ");
     scanf("%d %d", &n, &m);
 
-    // Allocation Matrix
     printf("Enter allocation matrix:\n");
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -25,7 +24,6 @@ int main() {
         }
     }
 
-    // Max Matrix
     printf("Enter max matrix:\n");
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -33,20 +31,17 @@ int main() {
         }
     }
 
-    // Available Resources
     printf("Enter available matrix:\n");
     for (int j = 0; j < m; j++) {
         scanf("%d", &avail[j]);
     }
 
-    // Calculate Need Matrix
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             need[i][j] = max[i][j] - alloc[i][j];
         }
     }
 
-    // Safety Algorithm
     while (count < n) {
         bool found = false;
         for (int i = 0; i < n; i++) {
@@ -58,7 +53,7 @@ int main() {
                     }
                 }
 
-                if (j == m) { // All resources satisfied
+                if (j == m) {
                     for (int k = 0; k < m; k++) {
                         avail[k] += alloc[i][k];
                     }
