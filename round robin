@@ -1,0 +1,83 @@
+#include<stdio.h>
+struct process{
+    int id,AT,BT,CT,TAT,WT,RT,completed,remaining_BT;
+    };
+void sort_by_AT(struct process p[],int n){
+    for(int i=0;i<n-1;i++){
+        for(int j=i+1;j<n;j++){
+            if(p[i].AT>p[j].AT){
+                struct process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+                }
+            }
+        }
+    }
+void round_robin(struct process p[],int n,int time_quantum){
+    sort_by_AT(p,n);
+    int completed = 0 , time = 0;
+    int visited[n];
+    int queue[n] , front = 0 ,rear = 0;
+    for(int i=0;i<n;i++){
+        p[i].remaining_BT = p[i].BT;
+        visited[i]= 0;
+        p[i].completed = 0;
+    }
+    queue[rear++] = 0;
+    visited[0] = 1;
+
+    while(completed<n){
+        int idx = queue[front++];
+        if(p[idx].remaining_BT == p[idx].BT){
+            p[idx].RT = time-p[idx].AT;
+        }
+        if(p[idx].AT>time){
+            time = p[idx].AT;
+        }
+        if(p[idx].remaining_BT > time_quantum){
+            time+=time_quantum;
+            p[idx].remaining_BT -= time_quantum;
+        }
+        else{
+            time+=p[idx].remaining_BT;
+            p[idx].CT = time;
+            p[idx].TAT = p[idx].CT - p[idx].AT;
+            p[idx].remaining_BT =0;
+            p[idx].WT = p[idx].TAT - p[idx].BT;
+            p[idx].completed = 1;
+            completed++;
+        }
+        for(int i=0;i<n;i++){
+            if(!p[i].completed && p[i].AT<=time && p[i].remaining_BT>0 && !visited[i]){
+                queue[rear++] = i;
+                visited[i] = 1;
+            }
+        }
+        if(p[idx].remaining_BT>0){
+            queue[rear++] = idx;
+        }
+    }
+    }
+int main(){
+    int n;
+    int time_quantum;
+    printf("Enter the number of processes:");
+    scanf("%d",&n);
+    struct process p[n];
+    for(int i=0;i<n;i++){
+        printf("Enter AT for process %d:\t",i+1);
+        scanf("%d",&p[i].AT);
+        printf("Enter BT for process %d:\t",i+1);
+        scanf("%d",&p[i].BT);
+        p[i].id = i+1;
+    }
+    printf("enter the time quantum:");
+    scanf("%d",&time_quantum);
+    round_robin(p,n,time_quantum);
+    printf("process\t\tAT\t\tBT\t\tCT\t\tTAT\t\tWT\t\tRT\n");
+    for(int i=0;i<n;i++)
+    {
+    printf("P%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t%d\n",p[i].id,p[i].AT,p[i].BT,p[i].CT,p[i].TAT,p[i].WT,p[i].RT);
+    }
+    return 0;
+    }
